@@ -6,11 +6,7 @@ import { useDarkMode } from "@/hooks/useDarkMode";
 export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const { mounted } = useDarkMode();
-
-  if (!mounted) {
-    return <>{children}</>;
-  }
+  useDarkMode();
 
   return <>{children}</>;
 };
