@@ -1,26 +1,40 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { STORAGE_KEYS } from "@/utils/constants";
 import { getFromLocalStorage, saveToLocalStorage } from "@/utils/localStorage";
 
 export const useDarkMode = () => {
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    const savedTheme = getFromLocalStorage(STORAGE_KEYS.THEME, "light");
-    return savedTheme === "dark";
-  });
-  const [mounted] = useState<boolean>(() => {
-    return typeof window !== "undefined";
-  });
+  const [isDark, setIsDark] = useState<boolean>(false);
+  const [mounted, setMounted] = useState(false);
+  const initializedRef = useRef(false);
 
   useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
+    if (!initializedRef.current) {
+      const savedTheme = getFromLocalStorage(STORAGE_KEYS.THEME, "light");
+      const isDarkMode = savedTheme === "dark";
+      setIsDark(isDarkMode);
+
+      if (isDarkMode) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+
+      initializedRef.current = true;
+      setMounted(true);
     }
-  }, [isDark]);
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      if (isDark) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    }
+  }, [isDark, mounted]);
 
   const toggleDarkMode = () => {
     setIsDark((prev) => {
