@@ -2,32 +2,35 @@
 
 import React from "react";
 import clsx from "clsx";
+import { motion } from "framer-motion";
 
 interface BadgeProps {
   children: React.ReactNode;
   variant?: "default" | "success" | "warning" | "danger" | "info";
   className?: string;
+  animated?: boolean;
 }
 
 export const Badge: React.FC<BadgeProps> = ({
   children,
   variant = "default",
   className,
+  animated = false,
 }) => {
-  return (
+  const badgeElement = (
     <span
       className={clsx(
-        "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium",
+        "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border border-opacity-50",
         {
-          "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200":
+          "bg-gradient-to-r from-slate-700 to-slate-800 text-slate-200 border-slate-600":
             variant === "default",
-          "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200":
+          "bg-gradient-to-r from-green-900 to-green-800 text-green-200 border-green-700":
             variant === "success",
-          "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200":
+          "bg-gradient-to-r from-yellow-900 to-yellow-800 text-yellow-200 border-yellow-700":
             variant === "warning",
-          "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200":
+          "bg-gradient-to-r from-red-900 to-red-800 text-red-200 border-red-700":
             variant === "danger",
-          "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200":
+          "bg-gradient-to-r from-indigo-900 to-indigo-800 text-indigo-200 border-indigo-700":
             variant === "info",
         },
         className,
@@ -35,5 +38,17 @@ export const Badge: React.FC<BadgeProps> = ({
     >
       {children}
     </span>
+  );
+
+  if (!animated) return badgeElement;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3 }}
+    >
+      {badgeElement}
+    </motion.div>
   );
 };
